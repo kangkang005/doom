@@ -1,0 +1,73 @@
+#+title: Tangle
+#+auto_tangle: t
+
+Reference: [[https://endlesspeak.github.io/docs/build/editorconfiguration/4-manage-by-orgmode/][study tangle]]
+
+* General Configuration
+:PROPERTIES:
+:HEADER-ARGS: :tangle ./code/el/tangle.el :lexical t
+:END:
+
+# tangle code to file below headline
+
+Show line numbers.
+#+begin_src emacs-lisp
+(global-linenum-mode t)
+#+end_src
+
+Maximize window.
+#+begin_src emacs-lisp
+(add-hook 'window-setup-hook #'toggle-frame-maximized)  ;; 'toggle-frame-fullscreen
+#+end_src
+
+* Python
+:PROPERTIES:
+:HEADER-ARGS: :tangle ./code/python/tangle.py :lexical t
+:END:
+
+#+begin_src python :results output
+print("hello world")
+#+end_src
+
+#+RESULTS:
+: hello world
+
+# no tangle code to file
+
+#+begin_src python :results output :tangle no
+print("no tangle")
+#+end_src
+
+#+RESULTS:
+: no tangle
+
+* Tangle one block
+
+#+begin_src python :results output :tangle ./code/python/tangle.py
+print("tangle this code")
+#+end_src
+
+
+* Tangle below headline
+:PROPERTIES:
+:HEADER-ARGS: :tangle ./code/python/tangle.py :lexical t
+:END:
+
+#+begin_src python :results output :tangle ./code/python/tangle.py
+print("tangle below headline")
+#+end_src
+
+#+RESULTS:
+: tangle below headline
+
+** No Tangle below headline
+:PROPERTIES:
+:HEADER-ARGS: :tangle no
+:END:
+
+#+begin_src python :results output
+print("no tangle below headline")
+#+end_src
+
+#+RESULTS:
+: no tangle below headline

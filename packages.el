@@ -48,13 +48,47 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
+;; `download-source'
 (setq package-archives
       '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
         ("org-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
         ("gnu-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
 
-(package! codeium :recipe (:host github :repo "Exafunction/codeium.el"))
+;; `org'
+(package! org-modern)
+(package! org-modern-indent :recipe (:host github :repo "jdtsmith/org-modern-indent"))
+(package! org-visual-outline :recipe (:host github :repo "legalnonsense/org-visual-outline"))
+(package! org-bullets)
+(package! org-superstar)
+(package! org-ai)
+(package! org-menu :recipe (:host github :repo "sheijk/org-menu"))
+(package! org-ref)
+(unpin! org-roam)
+(package! org-roam)
+(package! org-roam-ui)
+(package! org-download)
+(package! org-bars :recipe (:host github :repo "tonyaldon/org-bars"))
+(package! org-appear)
+(package! org-auto-tangle)
+(package! emacs-everywhere :pin nil)
 
+;; `workflow'
+(package! plantuml-mode)
+(package! flycheck-plantuml)
+
+;; `translation'
+(package! go-translate)
+(package! plz)
+(package! bing-dict)
+
+;; `indentation'
+(package! aggressive-indent)
+(package! highlight-indent-guides)
+
+;; `AI'
+(package! chatgpt-shell)
+
+;; `completion'
 (when (package! lsp-bridge
         :recipe (:host github
                  :repo "manateelazycat/lsp-bridge"
@@ -64,7 +98,58 @@
                  :build (:not compile)))
   (package! markdown-mode)
   (package! yasnippet))
+(package! codeium :recipe (:host github :repo "Exafunction/codeium.el"))
 
+;; `modeline'
+(package! keycast)
+
+;; `search'
+(package! p-search :recipe (:host github :repo "zkry/p-search"))
+
+;; `python'
+(package! jupyter)
+(package! ein)
+
+;; `text'
+(package! puni)
+
+;; `minibuffer'
+(package! embark)
+
+;; `ui'
+(package! rainbow-delimiters)
+(package! auto-dim-other-buffers)
+(package! dimmer)
+
+;; `cursor'
+(package! beacon)
+(package! goggles)
+
+;; `highlight'
+(package! symbol-overlay)
+(package! region-occurrences-highlighter)
+
+;; `theme'
+(package! spacemacs-theme)
+
+;; `graphics'
+(package! graphviz-dot-mode)
+
+;; `tool'
+(package! calfw)
+
+;; `agenda'
+(package! elgantt :recipe (:host github :repo "legalnonsense/elgantt"))
+
+;; `other'
 (package! sideline :recipe (:host github :repo "emacs-sideline/sideline"))
-
 (package! thing-edit :recipe (:host github :repo "manateelazycat/thing-edit"))
+
+;; `font'
+(package! cnfonts)
+;; 'M-x all-the-icons-install-fonts' to download font and 'fc-cache -f -v' install font
+(package! all-the-icons)
+(package! nerd-icons)
+
+;; `doc'
+(package! eldoc-box)

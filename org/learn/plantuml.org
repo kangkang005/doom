@@ -1,0 +1,54 @@
+#+title: Plantuml
+
+* Sequence Diagram
+
+#+begin_src plantuml :results verbatim
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: Another authentication Response
+@enduml
+#+end_src
+
+#+RESULTS:
+#+begin_example
+     ,-----.                           ,---.
+     |Alice|                           |Bob|
+     `--+--'                           `-+-'
+        |    Authentication Request      |
+        |------------------------------->|
+        |                                |
+        |    Authentication Response     |
+        |<- - - - - - - - - - - - - - - -|
+        |                                |
+        |Another authentication Request  |
+        |------------------------------->|
+        |                                |
+        |Another authentication Response |
+        |<- - - - - - - - - - - - - - - -|
+     ,--+--.                           ,-+-.
+     |Alice|                           |Bob|
+     `-----'                           `---'
+#+end_example
+
+#+begin_src plantuml :file images/plantuml/participant.png
+@startuml
+participant Participant as Foo
+actor       Actor       as Foo1
+boundary    Boundary    as Foo2
+control     Control     as Foo3
+entity      Entity      as Foo4
+database    Database    as Foo5
+collections Collections as Foo6
+queue       Queue       as Foo7
+Foo -> Foo1 : To actor
+Foo -> Foo2 : To boundary
+Foo -> Foo3 : To control
+Foo -> Foo4 : To entity
+Foo -> Foo5 : To database
+Foo -> Foo6 : To collections
+Foo -> Foo7: To queue
+@enduml
+#+end_src
