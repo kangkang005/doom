@@ -1,0 +1,85 @@
+#+title: Keymap
+
+* Org Mode
+** Heading :heading:
+*** Visibility Cycling
+**** Global and local cycling
+| Key   | Description                  | Command          |
+|-------+------------------------------+------------------|
+| TAB   | Subtree cycling(fold/expand) | org-cycle        |
+| S-TAB | Global cycling(fold/expand)  | org-global-cycle |
+**** Initial visibility
+#+begin_src org
+#+STARTUP: overview
+#+STARTUP: content
+#+STARTUP: showall
+#+STARTUP: show2levels
+#+STARTUP: show3levels
+#+STARTUP: show4levels
+#+STARTUP: show5levels
+#+STARTUP: showeverything
+#+end_src
+*** Motion
+| Key     | Description               | Method             | Command                         |
+|---------+---------------------------+--------------------+---------------------------------|
+| C-c C-n | Next heading              | Depth-first(DFS)   | org-next-visible-heading        |
+| C-c C-p | Prev heading              | Depth-first(DFS)   | org-previous-visible-heading    |
+| C-c C-f | Next sibling heading      | Breadth-first(BFS) | org-forward-heading-same-level  |
+| C-c C-b | Next sibling heading      | Breadth-first(BFS) | org-backward-heading-same-level |
+| C-c C-u | Backward to upper heading | -                  | outline-up-heading              |
+*** Structure Editing
+| Key                | Description                                      | Command                                |
+|--------------------+--------------------------------------------------+----------------------------------------|
+| M-RET              | Insert a new sibling heading, item or row        | org-meta-return                        |
+| M-LEFT/M-RIGHT     | Promote/Demote current heading by one level.     | org-do-promote/org-do-demote           |
+| M-S-LEFT/M-S-RIGHT | Promote/Demote the current subtree by one level. | org-promote-subtree/org-demote-subtree |
+*** Sparse Trees
+| Key     | Description                                                             | Command         |
+|---------+-------------------------------------------------------------------------+-----------------|
+| C-c /   | This prompts for an extra key to select a sparse-tree creating command. | org-sparse-tree |
+| C-c / r | Prompts for a regexp and shows a sparse tree with all matches.          | org-occur       |
+*** Plain Lists
+| Key            | Description                                                                 | Bullets  | Command         |
+|----------------+-----------------------------------------------------------------------------+----------+-----------------|
+| TAB            | Fold items                                                                  | All      | org-cycle       |
+| RET            | Insert new item of lower level.                                             | ALL      |                 |
+| M-RET          | Insert new item at current level.                                           | ALL      | org-insert-item |
+| M-S-RET        | Insert a new item with a checkbox                                           | Checkbox |                 |
+| M-UP/M-DOWN    | Move the item including subitems up/down                                    | All      |                 |
+| M-LEFT/M-RIGHT | Decrease/increase the indentation of an item.                               | All      |                 |
+| C-c C-c        | Toggle the state of the checkbox.                                           | Checkbox |                 |
+| C-c -          | Cycle the entire list level through the different itemize/enumerate bullets | All      |                 |
+** Table :table:
+*** Creation and conversion
+~C-c |~, Convert the active region to table, ~org-table-create-or-convert-from-region~.
+*** Re-aligning and field motion
+| Key         | Description                        | Command                  |
+|-------------+------------------------------------+--------------------------|
+| TAB         | Adjust table and move to next cell | org-table-next-field     |
+| C-c C-c     | Only adjust table, not move        | org-table-align          |
+| S-TAB       | Adjust table and move to prev cell | org-table-previous-field |
+| RET         | Re-edit current cell               | org-table-next-row       |
+| C-RET/M-RET | Add new row and move to next row   |                          |
+*** Column and row editing
+| Key            | Description                                                        | Command                                                |
+|----------------+--------------------------------------------------------------------+--------------------------------------------------------|
+| M-LEFT/M-RIGHT | Move the current column left/right                                 | org-table-move-column-left/org-table-move-column-right |
+| M-UP/M-DOWN    | Move the current row up/down                                       | org-table-move-row-up/org-table-move-row-down          |
+| C-c RET        | Insert a horizontal line(hline) below current row, and move point. | org-table-hline-and-move                               |
+| C-c -          | Insert a horizontal line(hline) below current row                  | org-table-insert-hline                                 |
+*** TBLFM(Tabular formula)
+| Key     | Description                               | Command                              |
+|---------+-------------------------------------------+--------------------------------------|
+| C-c '   | Toggle formula editor at temporary buffer | org-edit-special                     |
+| C-c C-c | Execute formula at ~+TBLFM:~ line         |                                      |
+| C-c }   | Show row number                           | org-table-toggle-coordinate-overlays |
+| C-c ?   | Show row and col information              | org-table-field-info                 |
+** Tags :tag:
+*** Setting Tags
+| Key     | Description                             | Command              |
+|---------+-----------------------------------------+----------------------|
+| C-c C-q | Enter new tags for the current headline | org-set-tags-command |
+*** Tag Searches
+| Key              | Description                                                     | Command               |
+|------------------+-----------------------------------------------------------------+-----------------------|
+| C-c \ or C-c / m | Create a sparse tree with all headlines matching a tags search. | org-match-sparse-tree |

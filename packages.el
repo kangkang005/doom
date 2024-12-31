@@ -48,6 +48,8 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
+;; Install package path: "~/.config/emacs/.local/straight/build-xxx/"
+;;
 ;; `download-source'
 (setq package-archives
       '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
@@ -70,7 +72,9 @@
 (package! org-bars :recipe (:host github :repo "tonyaldon/org-bars"))
 (package! org-appear)
 (package! org-auto-tangle)
-(package! emacs-everywhere :pin nil)
+(package! ob-async)
+(package! org-noter-plus :recipe (:host github :repo "yuchen-lea/org-noter-plus"))
+(package! nov :recipe (:host nil :repo "https://depp.brause.cc/nov.el.git"))
 
 ;; `workflow'
 (package! plantuml-mode)
@@ -87,6 +91,9 @@
 
 ;; `AI'
 (package! chatgpt-shell)
+(when (package! gptel)
+  (package! gptel-quick :recipe (:host github :repo "karthink/gptel-quick")) ;; M-x gptel-quick
+  (package! elysium))
 
 ;; `completion'
 (when (package! lsp-bridge
@@ -153,3 +160,22 @@
 
 ;; `doc'
 (package! eldoc-box)
+
+;; `app'
+;; issue: https://github.com/emacs-eaf/emacs-application-framework/discussions/475
+(when (package! eaf :recipe (:host github
+                             :repo "manateelazycat/emacs-application-framework"
+                             :files ("*.el" "*.py" "app" "core")
+                             :build (:not compile)))
+  )
+
+(package! netease-cloud-music :recipe (:host github
+                                       :repo "SpringHan/netease-cloud-music.el"))
+
+;; NOTE: emacs-everywhere Prerequisites:
+;;   On Linux xclip, xdotool, xprop, and xwininfo are needed.
+;;   On MacOS, Emacs must be allowed to “control your computer” under Settings > Accessibility.
+;; Usage:
+;;   $ emacsclient --eval "(emacs-everywhere)"
+;;   $ doom everywhere
+(package! emacs-everywhere :pin nil)

@@ -33,7 +33,7 @@ Alice <-- Bob: Another authentication Response
      `-----'                           `---'
 #+end_example
 
-#+begin_src plantuml :file images/plantuml/participant.png
+#+begin_src plantuml :file ../images/plantuml/participant.png
 @startuml
 participant Participant as Foo
 actor       Actor       as Foo1

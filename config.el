@@ -89,9 +89,9 @@
    '((python . t)
      (plantuml . t)
      ))
-  (setq org-plantuml-jar-path (expand-file-name "~/.config/doom/plantuml.jar"))
+  (setq org-plantuml-jar-path (expand-file-name (concat doom-user-dir "plantuml.jar")))
   (setq org-plantuml-executable-path "/usr/local/bin/plantuml")
-  (setq org-plantuml-executable-args '("-headless"))
+  (setq org-plantuml-args '("-headless"))
   (setq org-plantuml-exec-mode 'jar) ; 'jar  'executable
   )
 
@@ -238,6 +238,12 @@
   :config
   (setq org-appear-autokeywords t)
   (add-hook! org-mode :append #'org-appear-mode)
+  )
+
+(use-package! org-noter-plus
+  :commands (org-noter-plus--follow-nov-link)
+  :config
+  (setq org-noter-plus-image-dir "~/Notes/imgs/") ;; Directory to store images extracted from pdf files
   )
 
 (use-package! org-auto-tangle
@@ -539,85 +545,128 @@
 
 (use-package! highlight-indent-guides
   :config
-        (setq highlight-indent-guides-method 'character)
-        (setq highlight-indent-guides-responsive 'top)
-        (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive 'top)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  )
 
 ;; `AI'
 ;; A multi-llm Emacs shell (ChatGPT, Claude, Gemini, Kagi, Ollama, Perplexity) + editing integrations
+;; NOTE: not support: deepseek, kimi
 ;;
 ;; command:
 ;;   chatgpt-shell-swap-model: Swap model version from `chatgpt-shell-models’.
 (use-package! chatgpt-shell
   :ensure t
   :config
+
+  ;; (setq chatgpt-shell-model-version "deepseek-chat")
+  ;; (setq chatgpt-shell-api-url-base "https://api.deepseek.com")
+  ;; (setq chatgpt-shell-openai-key "sk-ebccc798c7314fc8b55654ca0b52b896")
+
   (setq chatgpt-shell-model-version "gpt-3.5-turbo")
+  (setq chatgpt-shell-api-url-base "https://api.vveai.com")
+  (setq chatgpt-shell-openai-key (getenv "OPENAI_API_KEY")))
+
+;; M-x gptel
+(use-package! gptel
+  :config
+  (setq-default gptel-default-mode 'markdown)
+  (setq gptel-default-mode 'org-mode)
+  ;; (setq gptel-api-key "sk-ebccc798c7314fc8b55654ca0b52b896")
+  ;; (setq gptel-use-curl nil)
+  ;; (setq gptel-temperature 0.1)
+  (setq gptel-model "deepseek-chat"
+        gptel-backend
+        (gptel-make-openai "DeepSeek"     ;Any name you want
+          :host "api.deepseek.com"
+          :endpoint "/chat/completions"
+          :stream t
+          ;; :key 'gptel-api-key             ;can be a function that returns the key
+          :key "sk-ebccc798c7314fc8b55654ca0b52b896"
+          :models '("deepseek-chat" "deepseek-coder")))
+  (setq gptel-model "moonshot-v1-8k"
+        gptel-backend
+        (gptel-make-openai "Kimi"               ;Any name you want
+          :host "api.moonshot.cn"
+          :endpoint "/v1/chat/completions"
+          :stream t
+          :key "sk-Tz0WCnGj3I5B5I6qagnhR1klnRtYRooVdiy01s6D7R5wM4v8"
+          :models '("moonshot-v1-8k" "moonshot-v1-16k" "moonshot-v1-32k"))))
+
+;; M-x elysium-query
+(use-package! elysium
   :custom
-  ((chatgpt-shell-api-url-base "https://api.vveai.com")
-   (chatgpt-shell-openai-key (getenv "OPENAI_API_KEY"))))
+  ;; Below are the default values
+  (elysium-window-size 0.33) ; The elysium buffer will be 1/3 your screen
+  (elysium-window-style 'vertical)) ; Can be customized to horizontal
+
+(use-package! smerge-mode
+  :ensure nil
+  :hook
+  (prog-mode . smerge-mode))
 
 ;; AI completion with company: key 'Enter' to complete,
 (use-package! codeium
-    ;; if you use straight
-    ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
-    ;; otherwise, make sure that the codeium.el file is on load-path
+  ;; if you use straight
+  ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
+  ;; otherwise, make sure that the codeium.el file is on load-path
 
-    :init
-    ;; use globally
-    (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
-    ;; or on a hook
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
+  :init
+  ;; use globally
+  (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
+  ;; or on a hook
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
 
-    ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local completion-at-point-functions
-    ;;             (list (cape-capf-super #'codeium-completion-at-point #'lsp-completion-at-point)))))
-    ;; an async company-backend is coming soon!
+  ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local completion-at-point-functions
+  ;;             (list (cape-capf-super #'codeium-completion-at-point #'lsp-completion-at-point)))))
+  ;; an async company-backend is coming soon!
 
-    ;; codeium-completion-at-point is autoloaded, but you can
-    ;; optionally set a timer, which might speed up things as the
-    ;; codeium local language server takes ~0.2s to start up
-    ;; (add-hook 'emacs-startup-hook
-    ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
+  ;; codeium-completion-at-point is autoloaded, but you can
+  ;; optionally set a timer, which might speed up things as the
+  ;; codeium local language server takes ~0.2s to start up
+  ;; (add-hook 'emacs-startup-hook
+  ;;  (lambda () (run-with-timer 0.1 nil #'codeium-init)))
 
-    ;; :defer t ;; lazy loading, if you want
-    :config
-    (setq use-dialog-box nil) ;; do not use popup boxes
+  ;; :defer t ;; lazy loading, if you want
+  :config
+  (setq use-dialog-box nil) ;; do not use popup boxes
 
-    ;; if you don't want to use customize to save the api-key
-    ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+  ;; if you don't want to use customize to save the api-key
+  ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
 
-    ;; get codeium status in the modeline
-    (setq codeium-mode-line-enable
+  ;; get codeium status in the modeline
+  (setq codeium-mode-line-enable
         (lambda (api) (not (memq api '(CancelRequest Heartbeat AcceptCompletion)))))
-    (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
-    ;; alternatively for a more extensive mode-line
-    ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
+  (add-to-list 'mode-line-format '(:eval (car-safe codeium-mode-line)) t)
+  ;; alternatively for a more extensive mode-line
+  ;; (add-to-list 'mode-line-format '(-50 "" codeium-mode-line) t)
 
-    ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
-    (setq codeium-api-enabled
+  ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
+  (setq codeium-api-enabled
         (lambda (api)
-            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
-    ;; you can also set a config for a single buffer like this:
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local codeium/editor_options/tab_size 4)))
+          (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+  ;; you can also set a config for a single buffer like this:
+  ;; (add-hook 'python-mode-hook
+  ;;     (lambda ()
+  ;;         (setq-local codeium/editor_options/tab_size 4)))
 
-    ;; You can overwrite all the codeium configs!
-    ;; for example, we recommend limiting the string sent to codeium for better performance
-    (defun my-codeium/document/text ()
-        (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
-    ;; if you change the text, you should also change the cursor_offset
-    ;; warning: this is measured by UTF-8 encoded bytes
-    (defun my-codeium/document/cursor_offset ()
-        (codeium-utf8-byte-length
-            (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
-    (setq codeium/document/text 'my-codeium/document/text)
-    (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+  ;; You can overwrite all the codeium configs!
+  ;; for example, we recommend limiting the string sent to codeium for better performance
+  (defun my-codeium/document/text ()
+    (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
+  ;; if you change the text, you should also change the cursor_offset
+  ;; warning: this is measured by UTF-8 encoded bytes
+  (defun my-codeium/document/cursor_offset ()
+    (codeium-utf8-byte-length
+     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
+  (setq codeium/document/text 'my-codeium/document/text)
+  (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
 
 ;; `completion'
 (use-package! company
@@ -798,7 +847,7 @@
               minimap-minimum-width 10
               minimap-window-location 'right)
   :config
-  (minimap-mode t)
+  ;; (minimap-mode t)
   )
 
 ;; `text'
@@ -1131,8 +1180,7 @@
 (use-package! bing-dict
   :config
   (setq bing-dict-vocabulary-save t)
-  ;; (setq bing-dict-vocabulary-file "~/vocabulary/vocabulary.org")
-  (setq bing-dict-vocabulary-file (concat (getenv "XDG_CONFIG_HOME") "/doom/vocabulary/vocabulary.org")))
+  (setq bing-dict-vocabulary-file (concat doom-user-dir "org/vocabulary.org")))
 
 ;; command:
 ;;   gt-do-translate
@@ -1144,6 +1192,19 @@
   (setq gt-chatgpt-host "https://api.vveai.com")
   (setq gt-chatgpt-model "gpt-3.5-turbo")
   (setq gt-chatgpt-temperature 0.7)
+
+  ;; deepseek
+  (setq gt-chatgpt-key "sk-ebccc798c7314fc8b55654ca0b52b896")
+  (setq gt-chatgpt-host "https://api.deepseek.com")
+  (setq gt-chatgpt-model "deepseek-coder")
+  ;; USE CASE                           TEMPERATURE
+  ;; Coding / Math                      0.0
+  ;; Data Cleaning / Data Analysis      1.0
+  ;; General Conversation               1.3
+  ;; Translation                        1.3
+  ;; Creative Writing / Poetry          1.5
+  (setq gt-chatgpt-temperature 1.3)
+
   ;; (setq gt-default-translator
   ;;       (gt-translator :taker (gt-taker :pick nil :prompt t)
   ;;                      :engines (gt-chatgpt-engine :stream t)
@@ -1303,4 +1364,54 @@ Default to translate at minibuffer."
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
 
   (setq plantuml-server-url "https://www.plantuml.com/plantuml")
+  )
+
+;; `App'
+;; NOTE: manually enter to eaf path and run script "./install-eaf.py" to install.
+;;      or "M-x eaf-install-and-update" to install.
+(use-package! eaf
+  :load-path "~/.config/emacs/.local/straight/repos/emacs-application-framework"
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  (eaf-browser-enable-adblocker t)
+  (browse-url-browser-function 'eaf-open-browser)
+  :config
+  (defalias 'browse-web #'eaf-open-browser)
+  (require 'eaf-file-manager)
+  (require 'eaf-music-player)
+  (require 'eaf-image-viewer)
+  (require 'eaf-camera)
+  (require 'eaf-demo)
+  (require 'eaf-airshare)
+  (require 'eaf-terminal)
+  (require 'eaf-markdown-previewer)
+  (require 'eaf-video-player)
+  (require 'eaf-vue-demo)
+  (require 'eaf-file-sender)
+  (require 'eaf-pdf-viewer)
+  (require 'eaf-mindmap)
+  (require 'eaf-jupyter)
+  (require 'eaf-org-previewer)
+  (require 'eaf-system-monitor)
+  (require 'eaf-rss-reader)
+  (require 'eaf-file-browser)
+  (require 'eaf-browser)
+  (require 'eaf-org)
+  (require 'eaf-mail)
+  (require 'eaf-git)
+  (when (display-graphic-p)
+    (require 'eaf-all-the-icons))
+  (require 'eaf-evil)
+  (setq eaf-evil-leader-key "SPC")
+  (define-key key-translation-map (kbd "SPC")
+              (lambda (prompt)
+                (if (derived-mode-p 'eaf-mode)
+                    (pcase eaf--buffer-app-name
+                      ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                                     (kbd "SPC")
+                                   (kbd eaf-evil-leader-key)))
+                      ("pdf-viewer" (kbd eaf-evil-leader-key))
+                      ("image-viewer" (kbd eaf-evil-leader-key))
+                      (_  (kbd "SPC")))
+                  (kbd "SPC"))))
   )
